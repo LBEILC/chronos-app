@@ -1,0 +1,5 @@
+{
+  "name": "Chronos - Immersive Memory Timeline",
+  "description": "A personal recording tool that organizes fragmented thoughts into a visual, cascading timeline using AI to summarize and tag entries.",
+  "requestFramePermissions": []
+}
