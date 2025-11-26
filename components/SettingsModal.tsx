@@ -432,7 +432,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-retro-light">
                         <Layout size={14} className="text-[#888]" />
-                        <span className="font-mono text-xs text-[#aaa] uppercase">CARD MARGIN</span>
+                        <span className="font-mono text-xs text-[#aaa] uppercase">{t.cardMargin}</span>
                       </div>
                       <button
                         onClick={() => { setScreenshotMargin(!screenshotMargin); triggerHaptic('light'); }}

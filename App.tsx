@@ -999,6 +999,8 @@ const App: React.FC = () => {
         setImageStylization={setImageStylization}
         screenshotMode={screenshotMode}
         setScreenshotMode={setScreenshotMode}
+        screenshotMargin={screenshotMargin}
+        setScreenshotMargin={setScreenshotMargin}
         screenshotSplitView={screenshotSplitView}
         setScreenshotSplitView={setScreenshotSplitView}
         smartAnalysisMode={smartAnalysisMode}
