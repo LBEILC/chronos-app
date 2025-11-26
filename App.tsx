@@ -267,6 +267,20 @@ const App: React.FC = () => {
     };
   }, [initAudio]);
 
+  // Resume AudioContext when app comes to foreground
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        initAudio();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [initAudio]);
+
   // Synthesize and play different sound effects
   const playClickSound = (forceType?: SoundType) => {
     if (!soundEnabled || !audioContextRef.current) return;
