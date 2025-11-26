@@ -17,7 +17,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
   // Common State
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  
+
   // Manual Mode State
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState('');
@@ -131,7 +131,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx?.drawImage(img, 0, 0, width, height);
-            
+
             // Compression quality 0.7
             const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
             setImages(prev => [...prev, dataUrl]);
@@ -142,7 +142,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
       };
       reader.readAsDataURL(file as Blob);
     });
-    
+
     // Reset input
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -177,7 +177,10 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
 
       {/* Modal Container */}
       {isExpanded && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 ${isClosing ? 'animate-fade-out pointer-events-none' : 'animate-fade-in'}`}>
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 ${isClosing ? 'animate-fade-out pointer-events-none' : 'animate-fade-in'}`}
+          onClick={handleClose}
+        >
           <style>{`
             @keyframes slideDownOut {
               0% { transform: translateY(0); opacity: 1; }
@@ -194,16 +197,19 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
               animation: fadeOut 0.3s ease-out forwards;
             }
           `}</style>
-          
-          <div className={`w-full max-w-2xl bg-[#1a1a1a] border-4 border-retro-light shadow-[10px_10px_0px_#000] relative flex flex-col ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} ${smartAnalysisMode ? 'max-h-[80vh]' : 'h-[85vh] md:h-auto md:max-h-[90vh]'}`}>
-            
+
+          <div
+            className={`w-full max-w-2xl bg-[#1a1a1a] border-4 border-retro-light shadow-[10px_10px_0px_#000] relative flex flex-col ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} ${smartAnalysisMode ? 'max-h-[80vh]' : 'h-[85vh] md:h-auto md:max-h-[90vh]'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+
             {/* Terminal Header */}
             <div className="px-4 py-2 border-b-4 border-retro-light flex justify-between items-center bg-retro-light shrink-0">
               <h2 className="text-sm font-bold text-black flex items-center gap-2 uppercase tracking-widest">
                 <Terminal size={16} />
                 {t.captureThought} // {smartAnalysisMode ? 'AUTO_ANALYSIS' : 'MANUAL_ENTRY'}
               </h2>
-              <button 
+              <button
                 onClick={handleClose}
                 className="p-1 bg-retro-red border-2 border-black hover:bg-red-400 transition-colors"
               >
@@ -215,7 +221,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
             <div className="p-4 bg-black relative flex-1 overflow-y-auto custom-scrollbar">
               {/* Green Screen Glow */}
               <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_20px_rgba(51,255,0,0.2)] z-0" />
-              
+
               <div className="relative z-10 flex flex-col h-full">
                 {smartAnalysisMode ? (
                   // SMART MODE: Simple Textarea
@@ -233,87 +239,87 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
                 ) : (
                   // MANUAL MODE: Form Fields
                   <div className="flex flex-col gap-6 font-mono pb-4">
-                    
+
                     {/* Row 1: Title */}
                     <div className="flex flex-col gap-1 group">
-                       <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
-                         <Terminal size={10} />
-                         {t.labels.title}
-                       </label>
-                       <input 
-                         type="text" 
-                         value={title}
-                         onChange={(e) => setTitle(e.target.value)}
-                         className="bg-transparent border-b border-retro-green/30 text-retro-green font-bold text-xl py-1 focus:outline-none focus:border-retro-green placeholder-retro-green/20"
-                         placeholder="UNTITLED_ENTRY"
-                       />
+                      <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
+                        <Terminal size={10} />
+                        {t.labels.title}
+                      </label>
+                      <input
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="bg-transparent border-b border-retro-green/30 text-retro-green font-bold text-xl py-1 focus:outline-none focus:border-retro-green placeholder-retro-green/20"
+                        placeholder="UNTITLED_ENTRY"
+                      />
                     </div>
 
                     {/* Row 2: Date & Mood */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                       <div className="flex flex-col gap-1 group">
-                          <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
-                            <Calendar size={10} />
-                            {t.labels.date}
-                          </label>
-                          <input 
-                            type="datetime-local" 
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            className="bg-transparent border-b border-retro-green/30 text-retro-green py-1 focus:outline-none focus:border-retro-green text-sm font-mono"
-                          />
-                       </div>
+                      <div className="flex flex-col gap-1 group">
+                        <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
+                          <Calendar size={10} />
+                          {t.labels.date}
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={date}
+                          onChange={(e) => setDate(e.target.value)}
+                          className="bg-transparent border-b border-retro-green/30 text-retro-green py-1 focus:outline-none focus:border-retro-green text-sm font-mono"
+                        />
+                      </div>
 
-                       <div className="flex flex-col gap-2">
-                          <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1">
-                            <Smile size={10} />
-                            {t.labels.mood}
-                          </label>
-                          <div className="flex flex-wrap gap-2">
-                             {Object.values(Mood).map(m => (
-                                <button
-                                  key={m}
-                                  onClick={() => { setMood(m); triggerHaptic('light'); }}
-                                  className={`
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1">
+                          <Smile size={10} />
+                          {t.labels.mood}
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {Object.values(Mood).map(m => (
+                            <button
+                              key={m}
+                              onClick={() => { setMood(m); triggerHaptic('light'); }}
+                              className={`
                                     text-[10px] uppercase px-2 py-1 border transition-all
-                                    ${mood === m 
-                                      ? 'bg-retro-green text-black border-retro-green font-bold shadow-[0_0_10px_rgba(51,255,0,0.5)]' 
-                                      : 'border-retro-green/30 text-retro-green/60 hover:text-retro-green hover:border-retro-green'}
+                                    ${mood === m
+                                  ? 'bg-retro-green text-black border-retro-green font-bold shadow-[0_0_10px_rgba(51,255,0,0.5)]'
+                                  : 'border-retro-green/30 text-retro-green/60 hover:text-retro-green hover:border-retro-green'}
                                   `}
-                                >
-                                  {t.moods[m]}
-                                </button>
-                             ))}
-                          </div>
-                       </div>
+                            >
+                              {t.moods[m]}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
                     {/* Row 3: Tags */}
                     <div className="flex flex-col gap-1 group">
-                       <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
-                         <Tag size={10} />
-                         {t.labels.tags}
-                       </label>
-                       <input 
-                         type="text" 
-                         value={tags}
-                         onChange={(e) => setTags(e.target.value)}
-                         className="bg-transparent border-b border-retro-green/30 text-retro-green py-1 focus:outline-none focus:border-retro-green placeholder-retro-green/20 text-sm"
-                         placeholder="TAG1, TAG2, TAG3..."
-                       />
+                      <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
+                        <Tag size={10} />
+                        {t.labels.tags}
+                      </label>
+                      <input
+                        type="text"
+                        value={tags}
+                        onChange={(e) => setTags(e.target.value)}
+                        className="bg-transparent border-b border-retro-green/30 text-retro-green py-1 focus:outline-none focus:border-retro-green placeholder-retro-green/20 text-sm"
+                        placeholder="TAG1, TAG2, TAG3..."
+                      />
                     </div>
 
                     {/* Row 4: Content */}
                     <div className="flex flex-col gap-1 group flex-1">
-                       <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
-                         {'>'} {t.labels.content}
-                       </label>
-                       <textarea
-                         value={content}
-                         onChange={(e) => setContent(e.target.value)}
-                         className="w-full bg-transparent border border-retro-green/20 p-2 text-retro-green text-base focus:outline-none focus:border-retro-green/50 placeholder-retro-green/20 font-mono leading-relaxed h-32 md:h-40 resize-none"
-                         placeholder={t.placeholder}
-                       />
+                      <label className="text-[10px] text-retro-green/60 uppercase tracking-widest flex items-center gap-1 group-focus-within:text-retro-green transition-colors">
+                        {'>'} {t.labels.content}
+                      </label>
+                      <textarea
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        className="w-full bg-transparent border border-retro-green/20 p-2 text-retro-green text-base focus:outline-none focus:border-retro-green/50 placeholder-retro-green/20 font-mono leading-relaxed h-32 md:h-40 resize-none"
+                        placeholder={t.placeholder}
+                      />
                     </div>
                   </div>
                 )}
@@ -326,7 +332,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
                         <div className="w-16 h-16 md:w-20 md:h-20 border border-retro-green/50 p-1 bg-black/50">
                           <img src={img} alt="Preview" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                         </div>
-                        <button 
+                        <button
                           onClick={() => removeImage(idx)}
                           className="absolute -top-2 -right-2 bg-retro-red text-black rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity border border-black shadow-sm"
                         >
@@ -337,51 +343,51 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
                   </div>
                 )}
               </div>
-              
+
               {/* Blinking Block Cursor (Visual only) */}
               <div className="absolute bottom-4 right-4 text-xs text-retro-green font-mono animate-pulse pointer-events-none">
-                 CURSOR_ACTIVE_
+                CURSOR_ACTIVE_
               </div>
             </div>
 
             {/* Footer Actions */}
             <div className="px-4 py-3 bg-[#262626] border-t-4 border-retro-light flex justify-between items-center shrink-0">
               <div className="flex items-center gap-3">
-                 <button
-                   onClick={() => { triggerHaptic('light'); fileInputRef.current?.click(); }}
-                   className="flex items-center gap-1 px-3 py-1 bg-[#333] border border-[#555] text-retro-light hover:text-retro-green hover:border-retro-green transition-colors text-xs font-bold uppercase"
-                   title={t.addImage}
-                 >
-                    <ImageIcon size={14} />
-                    <span className="hidden md:inline">{t.addImage}</span>
-                    <span className="ml-1 opacity-50 text-[10px]">({images.length})</span>
-                 </button>
-                 <input 
-                   type="file" 
-                   ref={fileInputRef} 
-                   onChange={handleImageUpload} 
-                   className="hidden" 
-                   accept="image/*" 
-                   multiple 
-                 />
-                 
-                 <span className="text-xs text-[#888] font-mono uppercase hidden md:inline ml-2 border-l border-[#444] pl-3">
+                <button
+                  onClick={() => { triggerHaptic('light'); fileInputRef.current?.click(); }}
+                  className="flex items-center gap-1 px-3 py-1 bg-[#333] border border-[#555] text-retro-light hover:text-retro-green hover:border-retro-green transition-colors text-xs font-bold uppercase"
+                  title={t.addImage}
+                >
+                  <ImageIcon size={14} />
+                  <span className="hidden md:inline">{t.addImage}</span>
+                  <span className="ml-1 opacity-50 text-[10px]">({images.length})</span>
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  accept="image/*"
+                  multiple
+                />
+
+                <span className="text-xs text-[#888] font-mono uppercase hidden md:inline ml-2 border-l border-[#444] pl-3">
                     // {smartAnalysisMode ? t.aiDisclaimer : 'MANUAL_INPUT_MODE'}
-                 </span>
+                </span>
               </div>
 
               <div className="flex items-center gap-4 ml-auto">
-                 <span className="text-xs text-retro-amber font-mono border border-retro-amber px-2 py-0.5">
-                   LEN: {content.length}
-                 </span>
-                 <button
+                <span className="text-xs text-retro-amber font-mono border border-retro-amber px-2 py-0.5">
+                  LEN: {content.length}
+                </span>
+                <button
                   onClick={handleSubmit}
                   disabled={!content.trim() && images.length === 0}
                   className="flex items-center gap-2 px-6 py-2 bg-retro-light border-b-4 border-r-4 border-[#555] active:border-0 active:translate-y-1 text-black font-bold uppercase hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                 >
-                   <span>{t.record}</span>
-                   <Save size={16} />
-                 </button>
+                >
+                  <span>{t.record}</span>
+                  <Save size={16} />
+                </button>
               </div>
             </div>
           </div>

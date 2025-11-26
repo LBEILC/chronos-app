@@ -1,106 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chronos // DATA_ARCHIVE</title>
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              background: '#1a1a1a',
-              surface: '#262626',
-              'retro-black': '#121212',
-              'retro-gray': '#2a2a2a',
-              'retro-light': '#e0e0e0',
-              'retro-amber': '#ffb000',
-              'retro-orange': '#ff5500',
-              'retro-red': '#ff3333',
-              'retro-green': '#33ff00',
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chronos // DATA_ARCHIVE</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#1a1a1a',
+            surface: '#262626',
+            'retro-black': '#121212',
+            'retro-gray': '#2a2a2a',
+            'retro-light': '#e0e0e0',
+            'retro-amber': '#ffb000',
+            'retro-orange': '#ff5500',
+            'retro-red': '#ff3333',
+            'retro-green': '#33ff00',
+          },
+          fontFamily: {
+            mono: ['"Share Tech Mono"', '"Noto Sans SC"', 'monospace'],
+            sans: ['"Share Tech Mono"', '"Noto Sans SC"', 'sans-serif'],
+          },
+          backgroundImage: {
+            'grid-pattern': "linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)",
+            'striped-bar': "repeating-linear-gradient(45deg, #262626, #262626 10px, #1a1a1a 10px, #1a1a1a 20px)",
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'blink': 'blink 1s step-end infinite',
+            'spin-slow': 'spin 3s linear infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
             },
-            fontFamily: {
-              mono: ['"Share Tech Mono"', '"Noto Sans SC"', 'monospace'],
-              sans: ['"Share Tech Mono"', '"Noto Sans SC"', 'sans-serif'],
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
             },
-            backgroundImage: {
-              'grid-pattern': "linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)",
-              'striped-bar': "repeating-linear-gradient(45deg, #262626, #262626 10px, #1a1a1a 10px, #1a1a1a 20px)",
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.5s ease-out',
-              'slide-up': 'slideUp 0.4s ease-out',
-              'blink': 'blink 1s step-end infinite',
-              'spin-slow': 'spin 3s linear infinite',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              },
-              blink: {
-                '0%, 100%': { opacity: '1' },
-                '50%': { opacity: '0' },
-              }
-            },
+            blink: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0' },
+            }
           },
         },
-      };
-    </script>
-    <style>
-      body {
-        background-color: #1a1a1a;
-        color: #e0e0e0;
-        overflow-x: hidden;
-        font-family: 'Share Tech Mono', 'Noto Sans SC', monospace;
-      }
-      
-      /* Retro Scrollbar */
-      ::-webkit-scrollbar {
-        width: 12px;
-        background: #1a1a1a;
-        border-left: 1px solid #333;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #ff5500;
-        border: 2px solid #1a1a1a;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #ffb000;
-      }
-      
-      .perspective-container {
-        perspective: 1200px;
-        transform-style: preserve-3d;
-      }
+      },
+    };
+  </script>
+  <style>
+    body {
+      background-color: #000000;
+      color: #e0e0e0;
+      overflow: hidden;
+      font-family: 'Share Tech Mono', 'Noto Sans SC', monospace;
+    }
 
-      .text-shadow-glow {
-        text-shadow: 0 0 5px rgba(51, 255, 0, 0.5);
-      }
-      
-      .text-shadow-amber {
-        text-shadow: 0 0 5px rgba(255, 176, 0, 0.5);
-      }
-      
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.3);
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #33ff00;
-      }
-    </style>
+    /* Retro Scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+      background: #1a1a1a;
+      border-left: 1px solid #333;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ff5500;
+      border: 2px solid #1a1a1a;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffb000;
+    }
+
+    .perspective-container {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    .text-shadow-glow {
+      text-shadow: 0 0 5px rgba(51, 255, 0, 0.5);
+    }
+
+    .text-shadow-amber {
+      text-shadow: 0 0 5px rgba(255, 176, 0, 0.5);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #33ff00;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -112,10 +119,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
+
+<body>
+  <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>

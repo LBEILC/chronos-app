@@ -9,11 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/haptics": "^7.0.2",
+    "@capacitor/ios": "^7.4.4",
     "@google/genai": "^1.30.0",
+    "@vercel/node": "^3.0.7",
     "lucide-react": "^0.554.0",
-    "@vercel/node": "^3.0.7"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
