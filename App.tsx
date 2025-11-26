@@ -743,7 +743,7 @@ const App: React.FC = () => {
 
     if (scrollDiff > 80) { // Threshold for feedback
       if (soundEnabled && !previewNoteId) {
-        playClickSound('SOFT');
+        playClickSound();
       }
       if (hapticEnabled && !previewNoteId) {
         triggerHaptic('light');
