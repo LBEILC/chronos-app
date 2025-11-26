@@ -886,7 +886,7 @@ const App: React.FC = () => {
                   marginBottom: '120px',
                   marginLeft: 'auto',
                   marginRight: 'auto',
-                  width: 'calc(100% - 48px)',
+                  width: screenshotMargin ? 'calc(100% - 48px)' : '100%',
                   transform: 'none',
                   filter: 'none',
                   opacity: 1,
