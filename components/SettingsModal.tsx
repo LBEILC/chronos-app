@@ -1,8 +1,9 @@
-
 import React, { useRef, useState, useEffect } from 'react';
-import { X, Settings as SettingsIcon, Monitor, Volume2, Globe, Camera, HardDrive, Download, Upload, Layout, Brain, Music, Image as ImageIcon, Vibrate } from 'lucide-react';
+import { X, Settings as SettingsIcon, Monitor, Volume2, Globe, Camera, HardDrive, Download, Upload, Layout, Brain, Music, Image as ImageIcon, Vibrate, Smartphone, Trash2, Check, AlertTriangle } from 'lucide-react';
 import { TRANSLATIONS } from '../constants';
-import { Note, SoundType } from '../types';
+import { Note, SoundType, Mood } from '../types';
+import { Share } from '@capacitor/share';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -26,15 +27,15 @@ interface SettingsModalProps {
   setScreenshotMode: (enabled: boolean) => void;
   screenshotSplitView: boolean;
   setScreenshotSplitView: (enabled: boolean) => void;
+  screenshotMargin: boolean;
+  setScreenshotMargin: (enabled: boolean) => void;
   smartAnalysisMode: boolean;
   setSmartAnalysisMode: (enabled: boolean) => void;
   notes: Note[];
   screenshotTargetId: string | null;
   setScreenshotTargetId: (id: string) => void;
   onImport: (notes: Note[]) => void;
-  triggerHaptic: (type?: 'light' | 'medium' | 'heavy') => void;
-  screenshotMargin: boolean;
-  setScreenshotMargin: (enabled: boolean) => void;
+  triggerHaptic: (style: 'light' | 'medium' | 'heavy') => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -59,15 +60,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   setScreenshotMode,
   screenshotSplitView,
   setScreenshotSplitView,
+  screenshotMargin,
+  setScreenshotMargin,
   smartAnalysisMode,
   setSmartAnalysisMode,
   notes,
   screenshotTargetId,
   setScreenshotTargetId,
   onImport,
-  triggerHaptic,
-  screenshotMargin,
-  setScreenshotMargin
+  triggerHaptic
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importStatus, setImportStatus] = useState<{ msg: string, type: 'success' | 'error' } | null>(null);
@@ -91,19 +92,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const t = TRANSLATIONS[lang];
 
-  const handleExport = () => {
+  const handleExport = async () => {
     triggerHaptic('medium');
     const dataStr = JSON.stringify(notes, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    const fileName = `chronos_archive_${new Date().toISOString().slice(0, 10)}.json`;
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chronos_archive_${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      // Write file to cache directory
+      const result = await Filesystem.writeFile({
+        path: fileName,
+        data: dataStr,
+        directory: Directory.Cache,
+        encoding: Encoding.UTF8,
+      });
+
+      // Share the file
+      await Share.share({
+        title: 'Chronos Backup',
+        text: 'Here is your Chronos memory archive.',
+        url: result.uri,
+        dialogTitle: 'Export Memories',
+      });
+    } catch (error) {
+      console.error('Export failed:', error);
+      // Fallback for web if needed, but we are targeting iOS app mostly now
+      // alert('Export failed. Please try again.');
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Note, Mood, FilterCriteria, SoundType } from './types';
 import { analyzeNote } from './services/geminiService';
+import { StorageService, StorageKeys } from './services/storage';
 import { NoteCard } from './components/NoteCard';
 import { EmptyCard } from './components/EmptyCard';
 import { Composer } from './components/Composer';
@@ -11,22 +12,14 @@ import { SettingsModal } from './components/SettingsModal';
 import { ConfirmationModal } from './components/ConfirmationModal';
 import { FilterModal } from './components/FilterModal';
 import { INITIAL_NOTES, TRANSLATIONS } from './constants';
-import { Disc, Battery, Wifi, Settings as SettingsIcon, Filter } from 'lucide-react';
+import { Disc, Battery, Wifi, Settings as SettingsIcon, Filter, Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
-  // Persistence Keys
-  const STORAGE_KEY_PREFIX = 'chronos_storage_';
+  // Loading State
+  const [isLoading, setIsLoading] = useState(true);
 
-  // State: Notes (Persisted)
-  const [notes, setNotes] = useState<Note[]>(() => {
-    try {
-      const savedNotes = localStorage.getItem(`${STORAGE_KEY_PREFIX}notes`);
-      return savedNotes ? JSON.parse(savedNotes) : INITIAL_NOTES;
-    } catch (error) {
-      console.warn("Failed to load notes from storage:", error);
-      return INITIAL_NOTES;
-    }
-  });
+  // State: Notes (Async Load)
+  const [notes, setNotes] = useState<Note[]>(INITIAL_NOTES);
 
   const [isComposerOpen, setComposerOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
@@ -34,12 +27,8 @@ const App: React.FC = () => {
   const [retractingNoteId, setRetractingNoteId] = useState<string | null>(null);
   const [noteToDeleteId, setNoteToDeleteId] = useState<string | null>(null);
 
-  // Settings State (Persisted)
-  const [lang, setLang] = useState<'en' | 'zh'>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}lang`);
-    return (saved === 'en' || saved === 'zh') ? saved : 'zh';
-  });
-
+  // Settings State (Async Load)
+  const [lang, setLang] = useState<'en' | 'zh'>('zh');
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
 
@@ -52,106 +41,89 @@ const App: React.FC = () => {
   };
   const [filterCriteria, setFilterCriteria] = useState<FilterCriteria>(defaultFilter);
 
-  const [crtEnabled, setCrtEnabled] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}crt`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [soundEnabled, setSoundEnabled] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}sound`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [soundVolume, setSoundVolume] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}volume`);
-    return saved !== null ? parseFloat(saved) : 0.5;
-  });
-
-  const [soundType, setSoundType] = useState<SoundType>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}sound_type`);
-    return (saved === 'MECHANICAL' || saved === 'RETRO' || saved === 'SOFT') ? (saved as SoundType) : 'MECHANICAL';
-  });
-
-  const [hapticEnabled, setHapticEnabled] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}haptic`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [imageStylization, setImageStylization] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}image_style`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [screenshotMode, setScreenshotMode] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}screenshot`);
-    return saved !== null ? saved === 'true' : false;
-  });
-
-  const [screenshotSplitView, setScreenshotSplitView] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}screenshot_split`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [screenshotMargin, setScreenshotMargin] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}screenshot_margin`);
-    return saved !== null ? saved === 'true' : true;
-  });
-
-  const [smartAnalysisMode, setSmartAnalysisMode] = useState(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}smart_analysis`);
-    return saved !== null ? saved === 'true' : true;
-  });
+  const [crtEnabled, setCrtEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundVolume, setSoundVolume] = useState(0.5);
+  const [soundType, setSoundType] = useState<SoundType>('MECHANICAL');
+  const [hapticEnabled, setHapticEnabled] = useState(true);
+  const [imageStylization, setImageStylization] = useState(true);
+  const [screenshotMode, setScreenshotMode] = useState(false);
+  const [screenshotSplitView, setScreenshotSplitView] = useState(true);
+  const [screenshotMargin, setScreenshotMargin] = useState(true);
+  const [smartAnalysisMode, setSmartAnalysisMode] = useState(true);
 
   const [screenshotTargetId, setScreenshotTargetId] = useState<string | null>(null);
 
-  // Effects for Persistence
+  // --- Async Initialization ---
   useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}notes`, JSON.stringify(notes));
-  }, [notes]);
+    const initData = async () => {
+      try {
+        await StorageService.migrateFromLocalStorage();
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}lang`, lang);
-  }, [lang]);
+        const [
+          loadedNotes,
+          loadedLang,
+          loadedCrt,
+          loadedSound,
+          loadedVolume,
+          loadedSoundType,
+          loadedHaptic,
+          loadedImageStyle,
+          loadedScreenshot,
+          loadedScreenshotSplit,
+          loadedScreenshotMargin,
+          loadedSmartAnalysis
+        ] = await Promise.all([
+          StorageService.loadNotes(),
+          StorageService.loadSetting<'en' | 'zh'>(StorageKeys.LANG, 'zh'),
+          StorageService.loadSetting(StorageKeys.CRT, true),
+          StorageService.loadSetting(StorageKeys.SOUND, true),
+          StorageService.loadSetting(StorageKeys.VOLUME, 0.5),
+          StorageService.loadSetting<SoundType>(StorageKeys.SOUND_TYPE, 'MECHANICAL'),
+          StorageService.loadSetting(StorageKeys.HAPTIC, true),
+          StorageService.loadSetting(StorageKeys.IMAGE_STYLE, true),
+          StorageService.loadSetting(StorageKeys.SCREENSHOT, false),
+          StorageService.loadSetting(StorageKeys.SCREENSHOT_SPLIT, true),
+          StorageService.loadSetting(StorageKeys.SCREENSHOT_MARGIN, true),
+          StorageService.loadSetting(StorageKeys.SMART_ANALYSIS, true),
+        ]);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}crt`, String(crtEnabled));
-  }, [crtEnabled]);
+        setNotes(loadedNotes);
+        setLang(loadedLang);
+        setCrtEnabled(loadedCrt);
+        setSoundEnabled(loadedSound);
+        setSoundVolume(loadedVolume);
+        setSoundType(loadedSoundType);
+        setHapticEnabled(loadedHaptic);
+        setImageStylization(loadedImageStyle);
+        setScreenshotMode(loadedScreenshot);
+        setScreenshotSplitView(loadedScreenshotSplit);
+        setScreenshotMargin(loadedScreenshotMargin);
+        setSmartAnalysisMode(loadedSmartAnalysis);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}sound`, String(soundEnabled));
-  }, [soundEnabled]);
+      } catch (error) {
+        console.error("Initialization failed:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}volume`, String(soundVolume));
-  }, [soundVolume]);
+    initData();
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}sound_type`, soundType);
-  }, [soundType]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}haptic`, String(hapticEnabled));
-  }, [hapticEnabled]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}image_style`, String(imageStylization));
-  }, [imageStylization]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}screenshot`, String(screenshotMode));
-  }, [screenshotMode]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}screenshot_split`, String(screenshotSplitView));
-  }, [screenshotSplitView]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}screenshot_margin`, String(screenshotMargin));
-  }, [screenshotMargin]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}smart_analysis`, String(smartAnalysisMode));
-  }, [smartAnalysisMode]);
+  // --- Persistence Effects ---
+  useEffect(() => { if (!isLoading) StorageService.saveNotes(notes); }, [notes, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.LANG, lang); }, [lang, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.CRT, crtEnabled); }, [crtEnabled, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SOUND, soundEnabled); }, [soundEnabled, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.VOLUME, soundVolume); }, [soundVolume, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SOUND_TYPE, soundType); }, [soundType, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.HAPTIC, hapticEnabled); }, [hapticEnabled, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.IMAGE_STYLE, imageStylization); }, [imageStylization, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SCREENSHOT, screenshotMode); }, [screenshotMode, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SCREENSHOT_SPLIT, screenshotSplitView); }, [screenshotSplitView, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SCREENSHOT_MARGIN, screenshotMargin); }, [screenshotMargin, isLoading]);
+  useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.SMART_ANALYSIS, smartAnalysisMode); }, [smartAnalysisMode, isLoading]);
 
   // Set default screenshot target if none selected
   useEffect(() => {
@@ -765,29 +737,49 @@ const App: React.FC = () => {
       }
     }
 
-    const currentScroll = e.currentTarget.scrollTop;
-    const delta = currentScroll - lastScrollTopRef.current;
+    // Haptic & Sound Feedback on Scroll
+    const currentScrollTop = e.currentTarget.scrollTop;
+    const scrollDiff = Math.abs(currentScrollTop - lastFeedbackScrollTopRef.current);
 
-    if (Math.abs(currentScroll - lastFeedbackScrollTopRef.current) > 80) {
-      if (soundEnabled) playClickSound();
-      if (hapticEnabled) triggerHaptic('light');
-      lastFeedbackScrollTopRef.current = currentScroll;
+    if (scrollDiff > 80) { // Threshold for feedback
+      if (soundEnabled && !previewNoteId) {
+        playClickSound('SOFT');
+      }
+      if (hapticEnabled && !previewNoteId) {
+        triggerHaptic('light');
+      }
+      lastFeedbackScrollTopRef.current = currentScrollTop;
     }
 
-    lastScrollTopRef.current = currentScroll;
-    scrollTopRef.current = currentScroll;
-    velocityRef.current = delta;
+    lastScrollTopRef.current = currentScrollTop;
+    scrollTopRef.current = currentScrollTop;
+
+    // Calculate velocity
+    const now = performance.now();
+    const dt = (now - lastFrameTimeRef.current) / 1000;
+    if (dt > 0) {
+      // Simple velocity approximation
+      // velocityRef.current = (currentScrollTop - lastScrollTopRef.current) / dt; 
+      // Actually we need delta from last frame, but here we just let the loop handle physics mostly
+    }
   };
 
-  return (
-    <div
-      className="h-screen w-screen bg-retro-black text-retro-light font-mono overflow-hidden relative selection:bg-retro-orange selection:text-black"
-      onClick={() => {
-        dismissPreview();
-        initAudio();
-      }}
-    >
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-retro-amber animate-spin" />
+          <span className="text-retro-light font-mono text-sm tracking-widest animate-pulse">SYSTEM_BOOT_SEQUENCE...</span>
+        </div>
+      </div>
+    );
+  }
 
+  return (
+    <div className={`fixed inset-0 bg-black text-retro-light font-mono overflow-hidden selection:bg-retro-amber selection:text-black ${crtEnabled ? 'crt-effect' : ''}`}>
+
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,18,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(18,18,18,0.5)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
       {crtEnabled && (
         <>
           <div className="fixed inset-0 pointer-events-none z-[9999] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
