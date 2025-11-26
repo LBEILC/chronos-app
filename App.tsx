@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { Note, Mood, FilterCriteria, SoundType } from './types';
 import { analyzeNote } from './services/geminiService';
 import { StorageService, StorageKeys } from './services/storage';
@@ -105,6 +105,10 @@ const App: React.FC = () => {
         console.error("Initialization failed:", error);
       } finally {
         setIsLoading(false);
+        // Hide Splash Screen with fade out
+        await SplashScreen.hide({
+          fadeOutDuration: 500
+        });
       }
     };
 

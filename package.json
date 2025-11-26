@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "export-logo": "tsx scripts/export-logo.ts",
+    "generate-splash": "tsx scripts/generate-splash.ts",
+    "generate-assets": "npm run export-logo && npm run generate-splash"
   },
   "dependencies": {
     "@capacitor/cli": "^7.4.4",
@@ -16,6 +19,7 @@
     "@capacitor/ios": "^7.4.4",
     "@capacitor/preferences": "^7.0.2",
     "@capacitor/share": "^7.0.2",
+    "@capacitor/splash-screen": "^7.0.3",
     "@google/genai": "^1.30.0",
     "@vercel/node": "^3.0.7",
     "lucide-react": "^0.554.0",
@@ -23,8 +27,12 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.19.1",
     "@vitejs/plugin-react": "^5.0.0",
+    "canvas": "^3.2.0",
+    "fs-extra": "^11.3.2",
+    "tsx": "^4.20.6",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
