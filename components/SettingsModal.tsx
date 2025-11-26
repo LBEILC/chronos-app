@@ -63,6 +63,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   setSmartAnalysisMode,
   notes,
   screenshotTargetId,
+  setScreenshotTargetId,
   onImport,
   triggerHaptic,
   screenshotMargin,
@@ -424,6 +425,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         className={`w-10 h-5 border border-[#444] rounded-full relative transition-colors shrink-0 ${screenshotSplitView ? 'bg-[#222233]' : 'bg-[#111]'}`}
                       >
                         <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#888] rounded-full transition-all duration-300 ${screenshotSplitView ? 'left-6 bg-retro-light' : 'left-1'}`} />
+                      </button>
+                    </div>
+
+                    {/* Screenshot Margin Toggle */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-retro-light">
+                        <Layout size={14} className="text-[#888]" />
+                        <span className="font-mono text-xs text-[#aaa] uppercase">CARD MARGIN</span>
+                      </div>
+                      <button
+                        onClick={() => { setScreenshotMargin(!screenshotMargin); triggerHaptic('light'); }}
+                        className={`w-10 h-5 border border-[#444] rounded-full relative transition-colors shrink-0 ${screenshotMargin ? 'bg-[#222233]' : 'bg-[#111]'}`}
+                      >
+                        <div className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-[#888] rounded-full transition-all duration-300 ${screenshotMargin ? 'left-6 bg-retro-light' : 'left-1'}`} />
                       </button>
                     </div>
                   </div>

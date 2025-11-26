@@ -552,6 +552,9 @@ const App: React.FC = () => {
           // Exiting screenshot mode: scroll to bottom
           const maxScroll = scrollContainerRef.current.scrollHeight - scrollContainerRef.current.clientHeight;
           scrollContainerRef.current.scrollTo({ top: maxScroll, behavior: 'smooth' });
+        } else if (screenshotMode) {
+          // Entering screenshot mode: scroll to top
+          scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }
     }, 100);
