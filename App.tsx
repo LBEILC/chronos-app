@@ -29,6 +29,7 @@ const App: React.FC = () => {
 
   // Settings State (Async Load)
   const [lang, setLang] = useState<'en' | 'zh'>('zh');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
 
@@ -63,6 +64,7 @@ const App: React.FC = () => {
         const [
           loadedNotes,
           loadedLang,
+          loadedTheme,
           loadedCrt,
           loadedSound,
           loadedVolume,
@@ -76,6 +78,7 @@ const App: React.FC = () => {
         ] = await Promise.all([
           StorageService.loadNotes(),
           StorageService.loadSetting<'en' | 'zh'>(StorageKeys.LANG, 'zh'),
+          StorageService.loadSetting<'dark' | 'light'>(StorageKeys.THEME, 'dark'),
           StorageService.loadSetting(StorageKeys.CRT, true),
           StorageService.loadSetting(StorageKeys.SOUND, true),
           StorageService.loadSetting(StorageKeys.VOLUME, 0.5),
@@ -90,6 +93,7 @@ const App: React.FC = () => {
 
         setNotes(loadedNotes);
         setLang(loadedLang);
+        setTheme(loadedTheme);
         setCrtEnabled(loadedCrt);
         setSoundEnabled(loadedSound);
         setSoundVolume(loadedVolume);
@@ -116,6 +120,14 @@ const App: React.FC = () => {
   }, []);
 
   // --- Persistence Effects ---
+  // Persist Theme
+  useEffect(() => {
+    if (!isLoading) {
+      StorageService.saveSetting(StorageKeys.THEME, theme);
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }, [theme, isLoading]);
+
   useEffect(() => { if (!isLoading) StorageService.saveNotes(notes); }, [notes, isLoading]);
   useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.LANG, lang); }, [lang, isLoading]);
   useEffect(() => { if (!isLoading) StorageService.saveSetting(StorageKeys.CRT, crtEnabled); }, [crtEnabled, isLoading]);
@@ -780,7 +792,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`fixed inset-0 bg-black text-retro-light font-mono overflow-hidden selection:bg-retro-amber selection:text-black ${crtEnabled ? 'crt-effect' : ''}`}>
+    <div className={`fixed inset-0 bg-background text-retro-light font-mono overflow-hidden selection:bg-retro-amber selection:text-black ${crtEnabled ? 'crt-effect' : ''}`}>
 
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,18,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(18,18,18,0.5)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
@@ -797,12 +809,12 @@ const App: React.FC = () => {
       )}
 
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-pattern opacity-20 bg-[size:40px_40px]" />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/80 via-transparent to-black/80" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-background/80 via-transparent to-background/80" />
 
       {/* Control Panel Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1a1a] border-b-2 border-[#333] h-auto min-h-16 pt-[env(safe-area-inset-top)] flex items-center justify-between px-4 md:px-8 shadow-2xl">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-header-bg border-b-2 border-divider h-auto min-h-16 pt-[env(safe-area-inset-top)] flex items-center justify-between px-4 md:px-8 shadow-2xl">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 border-r-2 border-[#333] pr-6">
+          <div className="flex items-center gap-3 border-r-2 border-divider pr-6">
             <div className="w-8 h-8 bg-retro-orange rounded-sm flex items-center justify-center text-black font-bold border border-retro-red shadow-[0_0_10px_rgba(255,85,0,0.5)]">
               <Disc size={20} className="animate-spin-slow" />
             </div>
@@ -991,6 +1003,8 @@ const App: React.FC = () => {
         }}
         lang={lang}
         setLang={setLang}
+        theme={theme}
+        setTheme={setTheme}
         crtEnabled={crtEnabled}
         setCrtEnabled={setCrtEnabled}
         soundEnabled={soundEnabled}

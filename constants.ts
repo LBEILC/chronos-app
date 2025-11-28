@@ -24,6 +24,9 @@ export const TRANSLATIONS = {
     soundEffect: "Mech. Sfx",
     hapticFeedback: "Haptics",
     volume: "Volume",
+    theme: "Theme",
+    darkMode: "Dark",
+    lightMode: "Light",
     soundType: "Sound Type",
     soundTypes: {
       MECHANICAL: "Mechanical",
@@ -116,6 +119,9 @@ export const TRANSLATIONS = {
     soundEffect: "机械音效",
     hapticFeedback: "触觉反馈",
     volume: "音量",
+    theme: "主题",
+    darkMode: "深色",
+    lightMode: "浅色",
     soundType: "音效类型",
     soundTypes: {
       MECHANICAL: "机械轴",

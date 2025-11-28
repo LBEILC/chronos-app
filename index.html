@@ -14,18 +14,39 @@
     rel="stylesheet">
   <script>
     tailwind.config = {
+      future: {
+        hoverOnlyWhenSupported: true,
+      },
       theme: {
         extend: {
           colors: {
-            background: '#1a1a1a',
-            surface: '#262626',
-            'retro-black': '#121212',
-            'retro-gray': '#2a2a2a',
-            'retro-light': '#e0e0e0',
-            'retro-amber': '#ffb000',
-            'retro-orange': '#ff5500',
-            'retro-red': '#ff3333',
-            'retro-green': '#33ff00',
+            background: 'var(--color-background)',
+            surface: 'var(--color-surface)',
+            'retro-black': 'var(--color-retro-black)',
+            'retro-gray': 'var(--color-retro-gray)',
+            'retro-light': 'var(--color-retro-light)',
+            'retro-amber': 'var(--color-retro-amber)',
+            'retro-orange': 'var(--color-retro-orange)',
+            'retro-red': 'var(--color-retro-red)',
+            'retro-green': 'var(--color-retro-green)',
+
+            // Semantic Colors
+            'card-bg': 'var(--color-card-bg)',
+            'card-border': 'var(--color-card-border)',
+            'header-bg': 'var(--color-header-bg)',
+            'header-text': 'var(--color-header-text)',
+            'body-bg': 'var(--color-body-bg)',
+            'terminal-bg': 'var(--color-terminal-bg)',
+            'terminal-border': 'var(--color-terminal-border)',
+            'modal-bg': 'var(--color-modal-bg)',
+            'modal-border': 'var(--color-modal-border)',
+            'modal-text': 'var(--color-modal-text)',
+            'divider': 'var(--color-divider)',
+            'subtext': 'var(--color-subtext)',
+            'input-bg': 'var(--color-input-bg)',
+            'button-bg': 'var(--color-button-bg)',
+            'button-text': 'var(--color-button-text)',
+            'button-border': 'var(--color-button-border)',
           },
           fontFamily: {
             mono: ['"Share Tech Mono"', '"Noto Sans SC"', 'monospace'],
@@ -33,7 +54,7 @@
           },
           backgroundImage: {
             'grid-pattern': "linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)",
-            'striped-bar': "repeating-linear-gradient(45deg, #262626, #262626 10px, #1a1a1a 10px, #1a1a1a 20px)",
+            'striped-bar': "repeating-linear-gradient(45deg, var(--color-surface), var(--color-surface) 10px, var(--color-background) 10px, var(--color-background) 20px)",
           },
           animation: {
             'fade-in': 'fadeIn 0.5s ease-out',
@@ -60,31 +81,97 @@
     };
   </script>
   <style>
+    :root {
+      /* Dark Theme (Default) */
+      --color-background: #1a1a1a;
+      --color-surface: #262626;
+      --color-retro-black: #121212;
+      --color-retro-gray: #2a2a2a;
+      --color-retro-light: #e0e0e0;
+      --color-retro-amber: #ffb000;
+      --color-retro-orange: #ff5500;
+      --color-retro-red: #ff3333;
+      --color-retro-green: #33ff00;
+
+      /* Semantic Colors (Dark) */
+      --color-card-bg: #e0e0e0;
+      --color-card-border: #222222;
+      --color-header-bg: #222222;
+      --color-header-text: #e0e0e0;
+      --color-body-bg: #d0d0d0;
+      --color-terminal-bg: #1a1a1a;
+      --color-terminal-border: #555555;
+      --color-modal-bg: #1a1a1a;
+      --color-modal-border: #333333;
+      --color-modal-text: #e0e0e0;
+      --color-divider: #444444;
+      --color-divider: #444444;
+      --color-subtext: #888888;
+      --color-input-bg: #080808;
+      --color-button-bg: #222222;
+      --color-button-text: #e0e0e0;
+      --color-button-border: #333333;
+    }
+
+    [data-theme="light"] {
+      /* Light Theme */
+      --color-background: #f2f2f2;
+      --color-surface: #ffffff;
+      --color-retro-black: #ffffff;
+      --color-retro-gray: #e5e5e5;
+      --color-retro-light: #1a1a1a;
+      --color-retro-amber: #d99000;
+      --color-retro-orange: #e64a00;
+      --color-retro-red: #cc0000;
+      --color-retro-green: #00aa00;
+
+      /* Semantic Colors (Light) */
+      --color-card-bg: #ffffff;
+      --color-card-border: #1a1a1a;
+      --color-header-bg: #f0f0f0;
+      --color-header-text: #1a1a1a;
+      --color-body-bg: #ffffff;
+      --color-terminal-bg: #f8f8f8;
+      --color-terminal-border: #1a1a1a;
+      --color-modal-bg: #f5f5f5;
+      --color-modal-border: #1a1a1a;
+      --color-modal-text: #1a1a1a;
+      --color-divider: #cccccc;
+      --color-divider: #cccccc;
+      --color-subtext: #666666;
+      --color-input-bg: #ffffff;
+      --color-button-bg: #e0e0e0;
+      --color-button-text: #1a1a1a;
+      --color-button-border: #1a1a1a;
+    }
+
     html {
-      background-color: #000000;
+      background-color: var(--color-background);
+      transition: background-color 0.3s ease;
     }
 
     body {
-      background-color: #000000;
-      color: #e0e0e0;
+      background-color: var(--color-background);
+      color: var(--color-retro-light);
       overflow: hidden;
       font-family: 'Share Tech Mono', 'Noto Sans SC', monospace;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* Retro Scrollbar */
     ::-webkit-scrollbar {
       width: 12px;
-      background: #1a1a1a;
-      border-left: 1px solid #333;
+      background: var(--color-background);
+      border-left: 1px solid var(--color-retro-gray);
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #ff5500;
-      border: 2px solid #1a1a1a;
+      background: var(--color-retro-orange);
+      border: 2px solid var(--color-background);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #ffb000;
+      background: var(--color-retro-amber);
     }
 
     .perspective-container {
@@ -105,11 +192,11 @@
     }
 
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.1);
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #33ff00;
+      background: var(--color-retro-green);
     }
   </style>
   <script type="importmap">

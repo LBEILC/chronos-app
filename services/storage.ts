@@ -17,6 +17,7 @@ export const StorageKeys = {
     SCREENSHOT_SPLIT: `${STORAGE_KEY_PREFIX}screenshot_split`,
     SCREENSHOT_MARGIN: `${STORAGE_KEY_PREFIX}screenshot_margin`,
     SMART_ANALYSIS: `${STORAGE_KEY_PREFIX}smart_analysis`,
+    THEME: `${STORAGE_KEY_PREFIX}theme`,
     MIGRATED: `${STORAGE_KEY_PREFIX}migrated_v1`,
 };
 

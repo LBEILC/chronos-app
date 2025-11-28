@@ -199,13 +199,13 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
           `}</style>
 
           <div
-            className={`w-full max-w-2xl bg-[#1a1a1a] border-4 border-retro-light shadow-[10px_10px_0px_#000] relative flex flex-col ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} ${smartAnalysisMode ? 'max-h-[80vh]' : 'h-[85vh] md:h-auto md:max-h-[90vh]'}`}
+            className={`w-full max-w-2xl bg-modal-bg border-4 border-modal-border shadow-[10px_10px_0px_#000] relative flex flex-col ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} ${smartAnalysisMode ? 'max-h-[80vh]' : 'h-[85vh] md:h-auto md:max-h-[90vh]'}`}
             onClick={(e) => e.stopPropagation()}
           >
 
             {/* Terminal Header */}
-            <div className="px-4 py-2 border-b-4 border-retro-light flex justify-between items-center bg-retro-light shrink-0">
-              <h2 className="text-sm font-bold text-black flex items-center gap-2 uppercase tracking-widest">
+            <div className="px-4 py-2 border-b-4 border-modal-border flex justify-between items-center bg-header-bg shrink-0">
+              <h2 className="text-sm font-bold text-header-text flex items-center gap-2 uppercase tracking-widest">
                 <Terminal size={16} />
                 {t.captureThought} // {smartAnalysisMode ? 'AUTO_ANALYSIS' : 'MANUAL_ENTRY'}
               </h2>
@@ -218,7 +218,7 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
             </div>
 
             {/* CRT Screen Area */}
-            <div className="p-4 bg-black relative flex-1 overflow-y-auto custom-scrollbar">
+            <div className="p-4 bg-terminal-bg relative flex-1 overflow-y-auto custom-scrollbar">
               {/* Green Screen Glow */}
               <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_20px_rgba(51,255,0,0.2)] z-0" />
 
@@ -351,11 +351,11 @@ export const Composer: React.FC<ComposerProps> = ({ onSave, isExpanded, setExpan
             </div>
 
             {/* Footer Actions */}
-            <div className="px-4 py-3 bg-[#262626] border-t-4 border-retro-light flex justify-between items-center shrink-0">
+            <div className="px-4 py-3 bg-header-bg border-t-4 border-modal-border flex justify-between items-center shrink-0">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => { triggerHaptic('light'); fileInputRef.current?.click(); }}
-                  className="flex items-center gap-1 px-3 py-1 bg-[#333] border border-[#555] text-retro-light hover:text-retro-green hover:border-retro-green transition-colors text-xs font-bold uppercase"
+                  className="flex items-center gap-1 px-3 py-1 bg-terminal-bg border border-divider text-subtext hover:text-retro-green hover:border-retro-green transition-colors text-xs font-bold uppercase"
                   title={t.addImage}
                 >
                   <ImageIcon size={14} />

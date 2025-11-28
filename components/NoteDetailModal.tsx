@@ -273,12 +273,11 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
       />
 
       {/* Modal Content - The Device */}
-      <div className={`relative w-full max-w-3xl bg-[#0a0a0a] border-2 ${isEditing ? 'border-retro-amber' : 'border-retro-green'} shadow-[0_0_40px_rgba(0,0,0,0.8)] rounded-none overflow-hidden ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} flex flex-col h-[85vh] transition-colors duration-300`}>
+      <div className={`relative w-full max-w-3xl bg-modal-bg border-2 ${isEditing ? 'border-retro-amber' : 'border-modal-border'} shadow-[0_0_40px_rgba(0,0,0,0.8)] rounded-none overflow-hidden ${isClosing ? 'animate-slide-down-out' : 'animate-slide-up'} flex flex-col h-[85vh] transition-colors duration-300`}>
 
         {/* System Header (UI Frame - Always Mono) */}
-        <div className={`${isEditing ? 'bg-retro-amber' : 'bg-[#151515] border-b border-retro-green/20'} px-4 py-3 flex justify-between items-center font-mono z-10 transition-colors duration-300 shrink-0`}>
+        <div className={`${isEditing ? 'bg-retro-amber' : 'bg-header-bg border-b border-divider'} px-4 py-3 flex justify-between items-center font-mono z-10 transition-colors duration-300 shrink-0`}>
           <div className={`flex items-center gap-2 ${isEditing ? 'text-black font-bold' : 'text-retro-green'}`}>
-            <Cpu size={16} />
             <span className="tracking-widest text-sm">{isEditing ? t.editMode : 'SYSTEM_LOG_VIEWER // v2.1'}</span>
           </div>
           <button
@@ -291,7 +290,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
 
         {/* Meta Bar (UI Frame - Mono) - Only visible in View Mode */}
         {!isEditing && (
-          <div className="grid grid-cols-2 bg-[#111] border-b border-[#222] text-[10px] font-mono text-[#666] shrink-0">
+          <div className="grid grid-cols-2 bg-terminal-bg border-b border-divider text-[10px] font-mono text-subtext shrink-0">
             <div className="p-2 border-r border-[#222]">
               TIMESTAMP: <span className="text-retro-light">{fullDate} {time}</span>
             </div>
@@ -302,7 +301,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
         )}
 
         {/* Scrollable Body - The "Screen" or "Paper" */}
-        <div className="overflow-y-auto custom-scrollbar flex-1 bg-[#121212] relative">
+        <div className="overflow-y-auto custom-scrollbar flex-1 bg-terminal-bg relative">
 
           <div className="min-h-full p-8 md:p-12 mx-auto max-w-2xl">
 
@@ -317,7 +316,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                     type="text"
                     value={formData.summary}
                     onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                    className="bg-[#080808] border-b-2 border-retro-amber p-3 text-xl font-bold text-retro-light focus:outline-none focus:bg-[#151515] transition-colors rounded-none placeholder-retro-amber/30 w-full"
+                    className="bg-input-bg border-b-2 border-retro-amber p-3 text-xl font-bold text-retro-light focus:outline-none focus:bg-terminal-bg transition-colors rounded-none placeholder-retro-amber/30 w-full"
                   />
                 </div>
 
@@ -329,7 +328,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                       type="datetime-local"
                       value={formData.createdAt}
                       onChange={(e) => setFormData({ ...formData, createdAt: e.target.value })}
-                      className="bg-[#080808] border border-retro-amber/50 p-2 text-retro-amber font-mono focus:outline-none focus:border-retro-amber rounded-none w-full"
+                      className="bg-input-bg border border-retro-amber/50 p-2 text-retro-amber font-mono focus:outline-none focus:border-retro-amber rounded-none w-full"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -341,7 +340,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                           onClick={() => { setFormData({ ...formData, mood: m }); triggerHaptic('light'); }}
                           className={`
                             px-1 py-2 text-[10px] font-bold uppercase border 
-                            ${formData.mood === m ? 'bg-retro-amber text-black border-retro-amber' : 'border-[#333] text-[#666] hover:border-[#666]'}
+                            ${formData.mood === m ? 'bg-retro-amber text-black border-retro-amber' : 'border-button-border text-subtext hover:border-subtext'}
                             transition-all
                           `}
                         >
@@ -358,7 +357,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                   <textarea
                     value={formData.content}
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    className="w-full h-96 bg-[#080808] border-2 border-retro-amber/30 p-4 text-retro-light font-mono leading-relaxed focus:outline-none focus:border-retro-amber resize-none rounded-none text-sm"
+                    className="w-full h-96 bg-input-bg border-2 border-retro-amber/30 p-4 text-retro-light font-mono leading-relaxed focus:outline-none focus:border-retro-amber resize-none rounded-none text-sm"
                   />
                 </div>
 
@@ -369,7 +368,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                     type="text"
                     value={formData.tags}
                     onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                    className="bg-[#080808] border border-retro-amber/50 p-3 text-retro-amber font-mono focus:outline-none focus:border-retro-amber rounded-none w-full"
+                    className="bg-input-bg border border-retro-amber/50 p-3 text-retro-amber font-mono focus:outline-none focus:border-retro-amber rounded-none w-full"
                     placeholder="TAG1, TAG2, TAG3..."
                   />
                 </div>
@@ -380,14 +379,14 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
                     <span>{t.photos}</span>
                     <button
                       onClick={() => { triggerHaptic('light'); fileInputRef.current?.click(); }}
-                      className="text-[10px] flex items-center gap-1 bg-[#222] px-2 py-1 hover:bg-[#333] border border-[#444]"
+                      className="text-[10px] flex items-center gap-1 bg-button-bg px-2 py-1 hover:bg-header-bg border border-button-border"
                     >
                       <Plus size={10} /> ADD
                     </button>
                   </label>
                   <input type="file" ref={fileInputRef} onChange={handleImageUpload} className="hidden" accept="image/*" multiple />
 
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-4 bg-[#080808] p-4 border border-retro-amber/20 min-h-[100px]">
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-4 bg-input-bg p-4 border border-retro-amber/20 min-h-[100px]">
                     {formData.images.map((img, i) => (
                       <div key={i} className="relative group aspect-square bg-[#111] border border-[#333]">
                         <img
@@ -424,13 +423,13 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
 
                   <ScrambleTitle
                     text={note.analysis?.summary || t.untitled}
-                    className="text-3xl md:text-4xl font-bold text-[#f0f0f0] font-sans leading-tight tracking-wide mb-2"
+                    className="text-3xl md:text-4xl font-bold text-header-text font-sans leading-tight tracking-wide mb-2"
                   />
                 </header>
 
                 {/* Document Body */}
                 <div className="prose prose-invert prose-lg max-w-none animate-blur-in" style={{ animationDelay: '0.4s', opacity: 0, animationFillMode: 'forwards' }}>
-                  <p className="text-[#d4d4d4] font-sans text-lg leading-loose tracking-wide whitespace-pre-wrap selection:bg-retro-green/30 selection:text-white">
+                  <p className="text-modal-text font-sans text-lg leading-loose tracking-wide whitespace-pre-wrap selection:bg-retro-green/30 selection:text-white">
                     {note.content}
                   </p>
                 </div>
@@ -481,7 +480,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
         </div>
 
         {/* Footer Actions (UI Frame - Always Mono) */}
-        <div className={`p-3 border-t flex justify-between items-center text-[10px] uppercase font-mono z-10 shrink-0 ${isEditing ? 'bg-[#1a1100] border-retro-amber' : 'bg-[#1a1a1a] border-[#222]'}`}>
+        <div className={`p-3 border-t flex justify-between items-center text-[10px] uppercase font-mono z-10 shrink-0 ${isEditing ? 'bg-[#1a1100] border-retro-amber' : 'bg-header-bg border-divider'}`}>
 
           {!isEditing ? (
             <>
@@ -490,7 +489,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
               <div className="flex gap-4 ml-auto">
                 <button
                   onClick={() => { triggerHaptic('medium'); setIsEditing(true); }}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#222] border border-[#333] text-retro-green hover:bg-retro-green hover:text-black hover:border-retro-green transition-all"
+                  className="flex items-center gap-2 px-4 py-2 bg-button-bg border border-button-border text-retro-green hover:bg-retro-green hover:text-black hover:border-retro-green transition-all active:scale-95"
                   title={t.edit}
                 >
                   <Edit2 size={12} />
@@ -499,7 +498,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
 
                 <button
                   onClick={() => onDelete(note.id)}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#222] border border-[#333] text-retro-red hover:bg-retro-red hover:text-black hover:border-retro-red transition-all group"
+                  className="flex items-center gap-2 px-4 py-2 bg-button-bg border border-button-border text-retro-red hover:bg-retro-red hover:text-black hover:border-retro-red transition-all group active:scale-95"
                   title={t.delete}
                 >
                   <Trash2 size={12} className="group-hover:animate-bounce" />
@@ -514,7 +513,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
               <div className="flex gap-4 ml-auto">
                 <button
                   onClick={handleDiscard}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#222] border border-[#444] text-[#888] hover:bg-[#333] hover:text-[#aaa] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-button-bg border border-button-border text-subtext hover:bg-header-bg hover:text-button-text transition-all active:scale-95"
                 >
                   <RotateCcw size={12} />
                   <span className="font-bold tracking-widest">{t.discardChanges}</span>
@@ -522,7 +521,7 @@ export const NoteDetailModal: React.FC<NoteDetailModalProps> = ({ note, onClose,
 
                 <button
                   onClick={handleSave}
-                  className="flex items-center gap-2 px-4 py-2 bg-retro-amber border border-retro-amber text-black font-bold hover:bg-white transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-retro-amber border border-retro-amber text-black font-bold hover:bg-white transition-all active:scale-95"
                 >
                   <Save size={12} />
                   <span className="font-bold tracking-widest">{t.saveChanges}</span>
