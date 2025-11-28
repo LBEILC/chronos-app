@@ -9,9 +9,11 @@
     "preview": "vite preview",
     "export-logo": "tsx scripts/export-logo.ts",
     "generate-splash": "tsx scripts/generate-splash.ts",
-    "generate-assets": "npm run export-logo && npm run generate-splash"
+    "generate-assets": "npm run export-logo && npm run generate-splash",
+    "generate-android-icons": "tsx scripts/generate-android-icons.ts"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.4",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^7.4.4",
     "@capacitor/filesystem": "^7.1.5",
